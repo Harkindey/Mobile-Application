@@ -6,18 +6,63 @@ import {
     TouchableOpacity,
     View,
     Text,
+    AsyncStorage,
 } from 'react-native';
 import globalStyles from '../../styles/globalStyles';
 
+// TODO: Set the obj to array in local storage
 export default class ButtonSwitchUser extends React.Component {
     state = {
-      modalVisible: false,
-    }
+        modalVisible: false,
+    };
 
+    /**
+    * @param visible
+    * @return true/false
+    */
     setModalVisible(visible) {
-      this.setState({modalVisible: visible});
+        this.setState({ modalVisible: visible });
     }
 
+    /**
+    * Sets User privliges in localStorage
+    */
+    setUserTypeRetailer() {
+        let USER_TYPE_object = {
+            firstTime: false,
+            type: 'reatiler',
+        };
+        // You only need to define what will be added or updated
+        let USER_TYPE_delta = {
+            // type: 'reatiler',
+        };
+
+        AsyncStorage.setItem('UID', JSON.stringify(USER_TYPE_object), () => {
+            AsyncStorage.mergeItem(
+                'UID',
+                JSON.stringify(USER_TYPE_delta),
+                () => {
+                    AsyncStorage.getItem('UID', (err, result) => {
+                        console.log(result);
+                    });
+                },
+            );
+        });
+    }
+
+    /**
+    * @param
+    * @return
+    */
+    componentDidMount() {
+        AsyncStorage.getItem('UID', (err, result) => {
+            console.log(result);
+        });
+    }
+
+    /**
+    * @return View
+    */
     render() {
         return (
             <View style={styles.container}>
@@ -28,40 +73,54 @@ export default class ButtonSwitchUser extends React.Component {
                     onRequestClose={() => {}}
                 >
                     <View style={styles.modalContainer}>
-                        <TouchableOpacity style={styles.hideModalButton}
+                        <TouchableOpacity
+                            style={styles.hideModalButton}
                             onPress={() => {
-                             this.setModalVisible(!this.state.modalVisible)
-                        }}>
-                        <Image style={styles.img}
-                            source={
-                                require('../../images/icons/cross.png')
-                            } />
+                                this.setModalVisible(!this.state.modalVisible);
+                            }}
+                        >
+                            <Image
+                                style={styles.img}
+                                source={require('../../images/icons/cross.png')}
+                            />
                         </TouchableOpacity>
 
                         <View style={styles.buttonsContainer}>
                             <View style={styles.pos}>
-                                <Text style={globalStyles.h2}>Växla användare</Text>
+                                <Text style={globalStyles.h2}>
+                                    Växla användare
+                                </Text>
                             </View>
-                            <TouchableOpacity style={styles.buttonSelectUser}
+                            <TouchableOpacity
+                                style={styles.buttonSelectUser}
                                 onPress={() => {
-                                 this.setModalVisible(!this.state.modalVisible)
-                            }}>
+                                    this.setModalVisible(
+                                        !this.state.modalVisible,
+                                    );
+                                }}
+                            >
                                 <Text style={styles.buttonText}>
                                     Återförsäljare
                                 </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.buttonSelectUser}
+                            <TouchableOpacity
+                                style={styles.buttonSelectUser}
                                 onPress={() => {
-                                 this.setModalVisible(!this.state.modalVisible)
-                            }}>
-                                <Text style={styles.buttonText}>
-                                    Montör
-                                </Text>
+                                    this.setModalVisible(
+                                        !this.state.modalVisible,
+                                    );
+                                }}
+                            >
+                                <Text style={styles.buttonText}>Montör</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.buttonSelectUser}
+                            <TouchableOpacity
+                                style={styles.buttonSelectUser}
                                 onPress={() => {
-                                 this.setModalVisible(!this.state.modalVisible)
-                            }}>
+                                    this.setModalVisible(
+                                        !this.state.modalVisible,
+                                    );
+                                }}
+                            >
                                 <Text style={styles.buttonText}>
                                     Privatperson
                                 </Text>
@@ -70,13 +129,16 @@ export default class ButtonSwitchUser extends React.Component {
                     </View>
                 </Modal>
 
-                <TouchableOpacity style={styles.showModalButton} onPress={() => {
-                        this.setModalVisible(!this.state.modalVisible)
-                }}>
-                    <Image style={styles.img}
-                        source={
-                            require('../../images/icons/switch_user.png')
-                        } />
+                <TouchableOpacity
+                    style={styles.showModalButton}
+                    onPress={() => {
+                        this.setModalVisible(!this.state.modalVisible);
+                    }}
+                >
+                    <Image
+                        style={styles.img}
+                        source={require('../../images/icons/switch_user.png')}
+                    />
                 </TouchableOpacity>
             </View>
         );
